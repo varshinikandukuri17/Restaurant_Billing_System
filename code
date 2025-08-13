@@ -1,0 +1,237 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Login credentials
+#define USERNAME "admin"
+#define PASSWORD "1234"
+
+// Structure for stock
+struct stock {
+    int paneer_s, paneer_m, paneer_l;
+    int biryani_s, biryani_m, biryani_l;
+    int dosa_s, dosa_m, dosa_l;
+    int jamun_s, jamun_m, jamun_l;
+} g;
+
+// Structure for customer
+struct customer {
+    char name[100];
+} f;
+
+// Structure for bill
+struct bill {
+    int qty1, qty2, qty3, qty4;
+    float paneer_price, biryani_price, dosa_price, jamun_price;
+    float net_price;
+} s;
+
+// Login function
+int login() {
+    char user[20], pass[20];
+    printf("\n===== LOGIN =====\n");
+    printf("Username: ");
+    scanf("%s", user);
+    printf("Password: ");
+    scanf("%s", pass);
+
+    if (strcmp(user, USERNAME) == 0 && strcmp(pass, PASSWORD) == 0) {
+        printf("Login successful!\n\n");
+        return 1;
+    } else {
+        printf("Invalid credentials! Exiting...\n");
+        return 0;
+    }
+}
+
+// Update stock
+void update_stock() {
+    FILE *fp = fopen("stock.txt", "w");
+    printf("\nEnter new stock quantities (S=Small, M=Medium, L=Large):\n");
+
+    printf("Paneer Butter Masala (S M L): ");
+    scanf("%d%d%d", &g.paneer_s, &g.paneer_m, &g.paneer_l);
+    printf("Chicken Biryani (S M L): ");
+    scanf("%d%d%d", &g.biryani_s, &g.biryani_m, &g.biryani_l);
+    printf("Masala Dosa (S M L): ");
+    scanf("%d%d%d", &g.dosa_s, &g.dosa_m, &g.dosa_l);
+    printf("Gulab Jamun (S M L): ");
+    scanf("%d%d%d", &g.jamun_s, &g.jamun_m, &g.jamun_l);
+
+    fprintf(fp, "Paneer %d %d %d\n", g.paneer_s, g.paneer_m, g.paneer_l);
+    fprintf(fp, "Biryani %d %d %d\n", g.biryani_s, g.biryani_m, g.biryani_l);
+    fprintf(fp, "Dosa %d %d %d\n", g.dosa_s, g.dosa_m, g.dosa_l);
+    fprintf(fp, "Jamun %d %d %d\n", g.jamun_s, g.jamun_m, g.jamun_l);
+
+    fclose(fp);
+    printf("Stock updated successfully!\n\n");
+}
+
+// View stock
+void view_stock() {
+    printf("\n===== CURRENT STOCK =====\n");
+    printf("Paneer Butter Masala (S/M/L): %d/%d/%d\n", g.paneer_s, g.paneer_m, g.paneer_l);
+    printf("Chicken Biryani (S/M/L): %d/%d/%d\n", g.biryani_s, g.biryani_m, g.biryani_l);
+    printf("Masala Dosa (S/M/L): %d/%d/%d\n", g.dosa_s, g.dosa_m, g.dosa_l);
+    printf("Gulab Jamun (S/M/L): %d/%d/%d\n", g.jamun_s, g.jamun_m, g.jamun_l);
+    printf("==========================\n\n");
+}
+
+// Paneer Butter Masala order
+struct bill paneer(struct bill s) {
+    int qty, size, price = 0;
+    printf("Enter number of Paneer Butter Masala: ");
+    scanf("%d", &qty);
+
+    for (int i = 0; i < qty; i++) {
+        printf("Size %d (1=S, 2=M, 3=L): ", i + 1);
+        scanf("%d", &size);
+
+        if ((size == 1 && g.paneer_s == 0) || (size == 2 && g.paneer_m == 0) || (size == 3 && g.paneer_l == 0)) {
+            printf("Out of stock for selected size!\n");
+            continue;
+        }
+
+        if (size == 1) { price += 150; g.paneer_s--; }
+        else if (size == 2) { price += 200; g.paneer_m--; }
+        else if (size == 3) { price += 250; g.paneer_l--; }
+    }
+    s.qty1 += qty;
+    s.paneer_price += price + (price * 0.05); // 5% GST
+    return s;
+}
+
+// Chicken Biryani order
+struct bill biryani(struct bill s) {
+    int qty, size, price = 0;
+    printf("Enter number of Chicken Biryani: ");
+    scanf("%d", &qty);
+
+    for (int i = 0; i < qty; i++) {
+        printf("Size %d (1=S, 2=M, 3=L): ", i + 1);
+        scanf("%d", &size);
+
+        if ((size == 1 && g.biryani_s == 0) || (size == 2 && g.biryani_m == 0) || (size == 3 && g.biryani_l == 0)) {
+            printf("Out of stock for selected size!\n");
+            continue;
+        }
+
+        if (size == 1) { price += 180; g.biryani_s--; }
+        else if (size == 2) { price += 220; g.biryani_m--; }
+        else if (size == 3) { price += 270; g.biryani_l--; }
+    }
+    s.qty2 += qty;
+    s.biryani_price += price + (price * 0.05);
+    return s;
+}
+
+// Masala Dosa order
+struct bill dosa(struct bill s) {
+    int qty, size, price = 0;
+    printf("Enter number of Masala Dosa: ");
+    scanf("%d", &qty);
+
+    for (int i = 0; i < qty; i++) {
+        printf("Size %d (1=S, 2=M, 3=L): ", i + 1);
+        scanf("%d", &size);
+
+        if ((size == 1 && g.dosa_s == 0) || (size == 2 && g.dosa_m == 0) || (size == 3 && g.dosa_l == 0)) {
+            printf("Out of stock for selected size!\n");
+            continue;
+        }
+
+        if (size == 1) { price += 80; g.dosa_s--; }
+        else if (size == 2) { price += 100; g.dosa_m--; }
+        else if (size == 3) { price += 130; g.dosa_l--; }
+    }
+    s.qty3 += qty;
+    s.dosa_price += price + (price * 0.05);
+    return s;
+}
+
+// Gulab Jamun order
+struct bill jamun(struct bill s) {
+    int qty, size, price = 0;
+    printf("Enter number of Gulab Jamun portions: ");
+    scanf("%d", &qty);
+
+    for (int i = 0; i < qty; i++) {
+        printf("Size %d (1=S, 2=M, 3=L): ", i + 1);
+        scanf("%d", &size);
+
+        if ((size == 1 && g.jamun_s == 0) || (size == 2 && g.jamun_m == 0) || (size == 3 && g.jamun_l == 0)) {
+            printf("Out of stock for selected size!\n");
+            continue;
+        }
+
+        if (size == 1) { price += 50; g.jamun_s--; }
+        else if (size == 2) { price += 80; g.jamun_m--; }
+        else if (size == 3) { price += 110; g.jamun_l--; }
+    }
+    s.qty4 += qty;
+    s.jamun_price += price + (price * 0.05);
+    return s;
+}
+
+// Display bill
+void bill_display(struct bill s, struct customer f) {
+    printf("\n========= FINAL BILL =========\n");
+    printf("Customer Name: %s\n", f.name);
+    if (s.qty1 > 0) printf("Paneer Butter Masala Total: Rs. %.2f\n", s.paneer_price);
+    if (s.qty2 > 0) printf("Chicken Biryani Total: Rs. %.2f\n", s.biryani_price);
+    if (s.qty3 > 0) printf("Masala Dosa Total: Rs. %.2f\n", s.dosa_price);
+    if (s.qty4 > 0) printf("Gulab Jamun Total: Rs. %.2f\n", s.jamun_price);
+    printf("-------------------------------\n");
+    s.net_price = s.paneer_price + s.biryani_price + s.dosa_price + s.jamun_price;
+    printf("Net Payable: Rs. %.2f\n", s.net_price);
+    printf("===============================\n");
+}
+
+int main() {
+    if (!login()) return 0;
+
+    int option, sub_option;
+    while (1) {
+        printf("\n===== INDIAN RESTAURANT BILLING SYSTEM =====\n");
+        printf("1. Stock Management\n");
+        printf("2. Billing\n");
+        printf("3. Exit\n");
+        printf("Choose an option: ");
+        scanf("%d", &option);
+
+        switch (option) {
+            case 1:
+                printf("\n1. View Stock\n2. Update Stock\nChoose: ");
+                scanf("%d", &sub_option);
+                if (sub_option == 1) view_stock();
+                else if (sub_option == 2) update_stock();
+                else printf("Invalid input!\n");
+                break;
+
+            case 2:
+                printf("Enter customer name: ");
+                scanf("%s", f.name);
+                printf("\nSelect items to bill:\n");
+                printf("1. Paneer Butter Masala\n2. Chicken Biryani\n3. Masala Dosa\n4. Gulab Jamun\n5. Done\n");
+                while (1) {
+                    printf("Choose item (1-5): ");
+                    scanf("%d", &sub_option);
+                    if (sub_option == 1) s = paneer(s);
+                    else if (sub_option == 2) s = biryani(s);
+                    else if (sub_option == 3) s = dosa(s);
+                    else if (sub_option == 4) s = jamun(s);
+                    else if (sub_option == 5) break;
+                    else printf("Invalid item choice!\n");
+                }
+                bill_display(s, f);
+                break;
+
+            case 3:
+                exit(0);
+
+            default:
+                printf("Invalid option. Try again.\n");
+        }
+    }
+    return 0;
+}
