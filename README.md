@@ -23,5 +23,5 @@ It’s designed for beginners who want to practice:
 - **Language**: C
 - **Compiler**: GCC / Any C compiler
 
-- 
+  
 Project Weblink:[🖥️ View C Project on OnlineGDB](https://onlinegdb.com/TCji4MEba)
