@@ -21,5 +21,7 @@ It’s designed for beginners who want to practice:
 
 ## 🛠 Technologies Used
 - **Language**: C
-- **Compiler**: GCC / Any C compiler 
+- **Compiler**: GCC / Any C compiler
+
+- 
 Project Weblink:[🖥️ View C Project on OnlineGDB](https://onlinegdb.com/TCji4MEba)
